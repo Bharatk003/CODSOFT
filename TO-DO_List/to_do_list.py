@@ -1,12 +1,38 @@
+"""
+@Author: Bharat Kshirsagar
+@Date: 04/01/2024 
+@Goal: A To-Do List application is a useful project that helps users manage
+        and organize their tasks efficiently. This project aims to create a
+        GUI-based application using Python, allowing users to create,
+        update, and track their to-do lists.
+
+@imports:  tkinter: GUI toolkit for python 
+            ttk: The themed Tkinter module that provides access to the Tk themed widget set.
+            messagebox: create message box
+            ThemedStyle: A class from ttkthemes used for applying themed styles to Tkinter widgets.
+"""
+import sys
 import tkinter as tk
 from tkinter import ttk, messagebox
-from ttkthemes import ThemedStyle
+# from ttkthemes import ThemedStyle
+from PIL import Image, ImageTk
+
 
 class TodoApp:
-    def __init__(self, root):
+    def __init__(self, root)->None:
+        """
+        Initialization Method
+        Constructor for class TodoApp
+        """
         self.root = root
-        self.root.title("ITFT1 To-Do List")
+        self.root.title("To-Do List")
         self.root.geometry("600x400")
+
+        icon_image = Image.open("list.png")  # Replace with the actual path to your PNG file
+        # icon_image = icon_image.resize((16, 16), Image.ANTIALIAS)  # Resize the image if needed
+        icon_photo = ImageTk.PhotoImage(icon_image)
+        self.root.iconphoto(True, icon_photo)
+
 
         self.tasks = []
 
@@ -38,7 +64,9 @@ class TodoApp:
         self.load_tasks()  # Load tasks from the file when the app starts
 
         # Bind entry change event
+         
         self.task_entry.bind("<KeyRelease>", self.on_entry_change)
+        self.task_entry.bind("<FocusIn>", self.on_entry_change)  
 
         # Configure row and column weights for resizing
         root.columnconfigure(0, weight=1)
@@ -50,21 +78,29 @@ class TodoApp:
         root.rowconfigure(2, weight=1)
         root.rowconfigure(3, weight=0)
 
-    # ... (rest of the code remains the same)
+ 
 
-
-    def add_task(self):
+    def add_task(self)->None:
+        """
+        Add a new task to the list
+        """
         new_task = self.task_entry.get()
         if new_task:
             self.tasks.append(new_task)
             self.update_task_list()
-            self.task_entry.delete(0, tk.END)
             self.save_tasks()  # Save tasks to the file after adding a new task
-            messagebox.showinfo("Task Added", "Task has been added successfully.")
+            self.task_entry.delete(0, tk.END)
+            print("Task Added: Task has been added successfully.")
         else:
             messagebox.showwarning("Warning", "Task cannot be empty!")
 
-    def delete_task(self):
+ 
+
+
+    def delete_task(self)->None:
+        """
+        Delete the selected task from the list
+        """
         selected_task_index = self.task_listbox.curselection()
         if selected_task_index:
             self.tasks.pop(selected_task_index[0])
@@ -74,7 +110,10 @@ class TodoApp:
         else:
             messagebox.showwarning("Warning", "Select a task to delete!")
 
-    def update_task(self):
+    def update_task(self)->None:
+        """
+        Update the selected task with the content of the entry
+        """
         selected_task_index = self.task_listbox.curselection()
         if selected_task_index:
             updated_task = self.task_entry.get()
@@ -89,8 +128,11 @@ class TodoApp:
         else:
             messagebox.showwarning("Warning", "Select a task to update!")
 
-    def on_entry_change(self, *_):
-        if self.task_entry.get():
+    def on_entry_change(self, *_)->None:
+        """
+        Enable or disable buttons based on entry content
+        """
+        if self.task_entry.get() or self.task_entry == self.root.focus_get():
             self.add_button['state'] = 'normal'
             selected_task_index = self.task_listbox.curselection()
             self.update_button['state'] = 'normal' if selected_task_index else 'disable'
@@ -100,19 +142,29 @@ class TodoApp:
             self.update_button['state'] = 'disable'
             self.delete_button['state'] = 'disable'
 
-    def update_task_list(self):
+
+    def update_task_list(self)->None:
+        """
+        Update the task listbox with the current list of tasks
+        """
         self.task_listbox.delete(0, tk.END)
         for index, task in enumerate(self.tasks, start=1):
             self.task_listbox.insert(tk.END, f"{index}. {task}")
 
-    def save_tasks(self):
-        with open("TO-DO_List/tasks.txt", "w") as file:
+    def save_tasks(self)->None:
+        """
+        Save tasks to a file
+        """
+        with open("tasks.txt", "w") as file:
             for task in self.tasks:
                 file.write(task + "\n")
 
-    def load_tasks(self):
+    def load_tasks(self)->None:
+        """
+        Load tasks from a file
+        """
         try:
-            with open("TO-DO_List/tasks.txt", "r") as file:
+            with open("tasks.txt", "r") as file:
                 self.tasks = [line.strip() for line in file.readlines()]
         except FileNotFoundError:
             pass  # If the file is not found, no tasks will be loaded
@@ -120,7 +172,11 @@ class TodoApp:
         # Ensure the loaded tasks are displayed
         self.update_task_list()
 
-if __name__ == "__main__":
+def main()->None:
     root = tk.Tk()
     app = TodoApp(root)
     root.mainloop()
+    sys.exit(0)
+
+
+main()

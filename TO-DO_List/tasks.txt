@@ -1,2 +1,5 @@
-Requirement analysis
-Coding
+requirement
+Design
+testing
+deployment
+provide services
