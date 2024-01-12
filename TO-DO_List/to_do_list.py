@@ -14,7 +14,7 @@
 import sys
 import tkinter as tk
 from tkinter import ttk, messagebox
-# from ttkthemes import ThemedStyle
+ 
 from PIL import Image, ImageTk
 
 
@@ -29,7 +29,6 @@ class TodoApp:
         self.root.geometry("600x400")
 
         icon_image = Image.open("list.png")  # Replace with the actual path to your PNG file
-        # icon_image = icon_image.resize((16, 16), Image.ANTIALIAS)  # Resize the image if needed
         icon_photo = ImageTk.PhotoImage(icon_image)
         self.root.iconphoto(True, icon_photo)
 
